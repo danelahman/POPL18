@@ -2,7 +2,7 @@
 
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
------- Code accompanying Section 7 of the paper Handling fibred algebraic effects" -----
+------ Code accompanying Section 7 of the paper "Handling fibred algebraic effects" ----
 ----------------------------------------------------------------------------------------
 -- Showing how to prove the proof obligations corresponding to global state equations --
 ----------------------------------------------------------------------------------------

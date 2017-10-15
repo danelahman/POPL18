@@ -4,7 +4,8 @@ This repository contains the formalisation accompanying the examples given in Se
 
 In these examples, we show that effect handlers provide a useful mechanism for reasoning about effectful programs.
 This formalisation is based on an embedding of the relevant value fragment of the language we present in the
-above-mentioned paper (eMLTT) in the dependently typed programming language/proof assistant [Agda](http://wiki.portal.chalmers.se/agda/pmwiki.php).
+above-mentioned paper (eMLTT) in the dependently typed programming language/proof
+assistant [Agda](http://wiki.portal.chalmers.se/agda/pmwiki.php) (tested to work with version 2.5.3).
 
 We have disabled Axiom K and limited Agda's pattern-matching to the definitions of the elimination forms for the embeddings
 of eMLTT types, and to the occasional simulation of the definitional eta equation of eMLTT's unit type.

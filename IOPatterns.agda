@@ -2,7 +2,7 @@
 
 ----------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
------------- Code accompanying Section 7 of the paper Handling fibred algebraic effects" -----------
+------------ Code accompanying Section 7 of the paper "Handling fibred algebraic effects" ----------
 ----------------------------------------------------------------------------------------------------
 -- Using a handler to define a predicate that holds if the computation follows the given protocol --
 ----------------------------------------------------------------------------------------------------

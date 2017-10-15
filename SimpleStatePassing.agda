@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
----- Code accompanying Section 7 of the paper Handling fibred algebraic effects" ----
+---- Code accompanying Section 7 of the paper "Handling fibred algebraic effects" ---
 -------------------------------------------------------------------------------------
 ------------ Natural state-passing presentation of stateful computations ------------
 -------------------------------------------------------------------------------------
