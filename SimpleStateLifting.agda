@@ -13,7 +13,7 @@ open import eMLTT
 
 module SimpleStateLifting where
 
-{- A representation of the canonical elements of type FA for the theory of global state -}
+{- Canonical elements of type FA for the theory of global state -}
 
 data UF (X : Set) : Set where
   F-return : (x : X) -> UF X

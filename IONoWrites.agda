@@ -12,7 +12,7 @@ open import eMLTT
 
 module IONoWrites where
 
-{- A representation of the canonical elements of type UFA for the theory of input-output of bits -}
+{- Canonical elements of type UFA for the theory of input-output of bits -}
 
 data UF (X : Set) : Set where
   F-return : (x : X) -> UF X
@@ -24,7 +24,8 @@ data UF (X : Set) : Set where
 
 handled-with : {X : Set} -> UF X -> (X -> U) -> U
 handled-with (F-return x)  f = f x
-handled-with (F-read c)    f = pi-c (sum-c (one-c) (one-c)) (λ v -> handled-with (c v) f)
+handled-with (F-read c)    f = pi-c (sum-c (one-c) (one-c))
+                                    (λ v -> handled-with (c v) f)
 handled-with (F-write v c) f = zero-c
 
 
@@ -39,5 +40,6 @@ no-w c = handled-with c (λ _ -> one-c)
 ex : {X : Set}
   -> (f : One + One -> One + One)
   -> (c : One + One -> UF X)
-  -> (El (no-w {X} (F-read (λ v -> F-write (f v) (c v))))) ==₁ (One + One -> Zero)
+  ->     (El (no-w {X} (F-read (λ v -> F-write (f v) (c v)))))
+     ==₁ (One + One -> Zero)
 ex f c = refl _

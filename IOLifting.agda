@@ -12,7 +12,7 @@ open import eMLTT
 
 module IOLifting where
 
-{- A representation of the canonical elements of type UFA for the theory of input-output of bits -}
+{- Canonical elements of type UFA for the theory of input-output of bits -}
 
 data UF (X : Set) : Set where
   F-return : (x : X) -> UF X
@@ -24,7 +24,8 @@ data UF (X : Set) : Set where
 
 handled-with-sig : {X : Set} -> UF X -> (X -> U) -> U
 handled-with-sig (F-return x)  f = f x
-handled-with-sig (F-read c)    f = sig-c (sum-c one-c one-c) (λ v -> handled-with-sig (c v) f)
+handled-with-sig (F-read c)    f = sig-c (sum-c one-c one-c)
+                                         (λ v -> handled-with-sig (c v) f)
 handled-with-sig (F-write v c) f = handled-with-sig c f
 
 
@@ -32,7 +33,8 @@ handled-with-sig (F-write v c) f = handled-with-sig c f
 
 handled-with-pi : {X : Set} -> UF X -> (X -> U) -> U
 handled-with-pi (F-return x)  f = f x
-handled-with-pi (F-read c)    f = pi-c (sum-c one-c one-c) (λ v -> handled-with-pi (c v) f)
+handled-with-pi (F-read c)    f = pi-c (sum-c one-c one-c)
+                                       (λ v -> handled-with-pi (c v) f)
 handled-with-pi (F-write v c) f = handled-with-pi c f
 
 

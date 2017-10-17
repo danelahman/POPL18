@@ -25,7 +25,7 @@ eq1-aux' l c s l' =
     upd s l (s l) l'
   ==⟨ refl _ ⟩
     +-elim (isDec l l') (λ p -> s l) (λ _ -> s l')
-  ==⟨ +-elim {Z = λ z -> +-elim z (λ p → s l) (λ _ → s l') == s l'}
+  ==⟨ +-elim {Z = λ z -> +-elim z (λ p -> s l) (λ _ -> s l') == s l'}
              (isDec l l')
              (λ p -> app-cong {f = s} p)
              (λ _ -> refl (s l')) ⟩
@@ -130,7 +130,8 @@ eq3-aux' l v v' s l' =
     upd (upd s l v) l v' l'
   ==⟨ refl _ ⟩
     +-elim (isDec l l') (λ p -> v') (λ _ -> (upd s l v) l')
-  ==⟨ +-elim {Z = λ z -> +-elim z (λ p -> v') (λ _ -> upd s l v l') == +-elim z (λ p -> v') (λ _ -> s l')}
+  ==⟨ +-elim {Z = λ z ->    +-elim z (λ p -> v') (λ _ -> upd s l v l')
+                         == +-elim z (λ p -> v') (λ _ -> s l')}
              (isDec l l')
              (λ p -> refl v')
              (λ p -> eq3-aux'' l v s l' p) ⟩
@@ -177,15 +178,24 @@ eq4-aux : {X : Set}
        -> (c : Val × Val -> State X)
        -> (s : Store)
        ->    (get l (λ v -> get l' (λ v' -> c (v , v')))) s
-          == +-elim {Z = λ _ -> State X} (isDec l l') (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v')))) (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v')))) s
+          == (+-elim {Z = λ _ -> State X}
+                     (isDec l l')
+                     (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v'))))
+                     (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))) s
 eq4-aux {X} l l' c s =
     (get l (λ v -> get l' (λ v' -> c (v , v')))) s
   ==⟨ +-elim {Z = λ z ->     (get l (λ v -> get l' (λ v' -> c (v , v')))) s
-                          == +-elim {Z = λ _ -> State X} z (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v')))) (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v')))) s }
+                          == (+-elim {Z = λ _ -> State X}
+                                     z
+                                     (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v'))))
+                                     (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))) s }
               (isDec l l')
               (λ _ -> refl _)
               (λ _ -> refl _) ⟩
-    +-elim {Z = λ _ -> State X} (isDec l l') (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v')))) (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v')))) s
+    (+-elim {Z = λ _ -> State X}
+            (isDec l l')
+            (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v'))))
+            (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))) s
   ∎
 
 eq4 : {X : Set}
@@ -193,11 +203,15 @@ eq4 : {X : Set}
    -> (l' : Loc)
    -> (c : Val × Val -> State X)
    ->    (get l (λ v -> get l' (λ v' -> c (v , v'))))
-      == +-elim (isDec l l') (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v')))) (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))
+      == +-elim (isDec l l')
+                (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v'))))
+                (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))
 eq4 l l' c =
     get l (λ v -> get l' (λ v' -> c (v , v')))
   ==⟨ fun-ext (λ s -> eq4-aux l l' c s) ⟩
-    +-elim (isDec l l') (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v')))) (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))
+    +-elim (isDec l l')
+           (λ _ -> get l (λ v -> get l' (λ v' -> c (v , v'))))
+           (λ _ -> get l' (λ v' -> get l (λ v -> c (v , v'))))
   ∎
 
 
@@ -216,9 +230,19 @@ eq5-aux'' l l' v v' s p l'' =
   ==⟨ refl _ ⟩
     +-elim (isDec l' l'') (λ q -> v') (λ _ -> upd s l v l'')
   ==⟨ refl _ ⟩
-    +-elim (isDec l' l'') (λ q -> v') (λ _ -> +-elim (isDec l l'') (λ q -> v) (λ _ -> s l''))
-  ==⟨ +-elim {Z = λ z ->    +-elim z (λ q -> v') (λ _ -> +-elim (isDec l l'') (λ q -> v) (λ _ -> s l''))
-                        == +-elim (isDec l l'') (λ q -> v) (λ _ -> +-elim z (λ q -> v') (λ _ -> s l''))}
+    +-elim (isDec l' l'')
+           (λ q -> v')
+           (λ _ -> +-elim (isDec l l'') (λ q -> v) (λ _ -> s l''))
+  ==⟨ +-elim {Z = λ z ->    +-elim z
+                                   (λ q -> v')
+                                   (λ _ -> +-elim (isDec l l'')
+                                                  (λ q -> v)
+                                                  (λ _ -> s l''))
+                        == +-elim (isDec l l'')
+                                  (λ q -> v)
+                                  (λ _ -> +-elim z
+                                                 (λ q -> v')
+                                                 (λ _ -> s l''))}
              (isDec l' l'')
              (λ q -> +-elim {Z = λ z ->   v'
                                        == +-elim z (λ r -> v) (λ _ -> v')}
@@ -226,9 +250,13 @@ eq5-aux'' l l' v v' s p l'' =
                             (λ r -> zero-elim (p (trans r (sym q))))
                             (λ r -> refl v' ))
              (λ q -> refl _) ⟩
-    +-elim (isDec l l'') (λ q -> v) (λ _ -> +-elim (isDec l' l'') (λ q -> v') (λ _ -> s l''))
+    +-elim (isDec l l'')
+           (λ q -> v)
+           (λ _ -> +-elim (isDec l' l'') (λ q -> v') (λ _ -> s l''))
   ==⟨ refl _ ⟩
-    +-elim (isDec l l'') (λ q -> v) (λ _ -> upd s l' v' l'')
+    +-elim (isDec l l'')
+           (λ q -> v)
+           (λ _ -> upd s l' v' l'')
   ==⟨ refl _ ⟩
     upd (upd s l' v') l v l''
   ∎
@@ -260,14 +288,24 @@ eq5-aux : {X : Set}
        -> (c : State X)
        -> (s : Store)
        ->    (put l v (put l' v' c)) s
-          == +-elim {Z = λ _ -> State X} (isDec l l') (λ _ -> put l v (put l' v' c)) (λ _ -> put l' v' (put l v c)) s
+          == (+-elim {Z = λ _ -> State X}
+                     (isDec l l')
+                     (λ _ -> put l v (put l' v' c))
+                     (λ _ -> put l' v' (put l v c))) s
 eq5-aux {X} l l' v v' c s =
     (put l v (put l' v' c)) s
-  ==⟨ +-elim {Z = λ z ->   put l v (put l' v' c) s
-                        == +-elim {Z = λ z' -> State X} z (λ _ -> put l v (put l' v' c)) (λ _ -> put l' v' (put l v c)) s} (isDec l l')
+  ==⟨ +-elim {Z = λ z ->   (put l v (put l' v' c)) s
+                        == (+-elim {Z = λ z' -> State X}
+                                   z
+                                   (λ _ -> put l v (put l' v' c))
+                                   (λ _ -> put l' v' (put l v c))) s}
+             (isDec l l')
              (λ _ -> refl _)
              (λ p -> eq5-aux' l l' v v' c s p) ⟩
-    +-elim {Z = λ _ -> State X} (isDec l l') (λ _ -> put l v (put l' v' c)) (λ _ -> put l' v' (put l v c)) s
+    (+-elim {Z = λ _ -> State X}
+            (isDec l l')
+            (λ _ -> put l v (put l' v' c))
+            (λ _ -> put l' v' (put l v c))) s
   ∎
 
 eq5 : {X : Set}
@@ -277,9 +315,13 @@ eq5 : {X : Set}
    -> (v' : Val)
    -> (c : State X)
    ->    put l v (put l' v' c)
-      == +-elim (isDec l l') (λ _ -> put l v (put l' v' c)) (λ _ -> put l' v' (put l v c))
+      == +-elim (isDec l l')
+                (λ _ -> put l v (put l' v' c))
+                (λ _ -> put l' v' (put l v c))
 eq5 l l' v v' c =
     put l v (put l' v' c)
   ==⟨ fun-ext (λ s -> eq5-aux l l' v v' c s) ⟩
-    +-elim (isDec l l') (λ _ -> put l v (put l' v' c)) (λ _ -> put l' v' (put l v c))
+    +-elim (isDec l l')
+           (λ _ -> put l v (put l' v' c))
+           (λ _ -> put l' v' (put l v c))
   ∎

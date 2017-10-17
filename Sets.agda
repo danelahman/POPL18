@@ -30,21 +30,26 @@ one-eq-fun1 : {x y : One} -> x == y -> One
 one-eq-fun1 p = ⋆
 
 one-eq-fun2 : {x y : One} -> One -> x == y
-one-eq-fun2 {⋆} {⋆} _ = refl ⋆ --using pattern-matching on x and y to simulate definitional eta-expansion for One
+one-eq-fun2 {⋆} {⋆} _ = refl ⋆
+  --using pattern-matching on x and y to simulate definitional eta-expansion for One
 
 one-eq-iso1 : {x y : One}
            -> (p : x == y)
            -> one-eq-fun2 (one-eq-fun1 p) == p
 one-eq-iso1 {x} {y} p =
     one-eq-fun2 (one-eq-fun1 p)
-  ==⟨ eq-elim {Y = λ x y p -> one-eq-fun2 (one-eq-fun1 p) == p} p (λ {⋆ -> refl (refl ⋆)}) ⟩ --using pattern-matching on x to simulate definitional eta-expansion for One
+  ==⟨ eq-elim {Y = λ x y p -> one-eq-fun2 (one-eq-fun1 p) == p}
+              p
+              (λ {⋆ -> refl (refl ⋆)}) ⟩
+      --using pattern-matching on x to simulate definitional eta-expansion for One
     p
   ∎
 
 one-eq-iso2 : {x y : One}
            -> (z : One)
            -> one-eq-fun1 {x} {y} (one-eq-fun2 z) == z
-one-eq-iso2 {x} {y} ⋆ = --using pattern-matching on x and y to simulate definitional eta-expansion for One
+one-eq-iso2 {x} {y} ⋆ =
+  --using pattern-matching on x and y to simulate definitional eta-expansion for One
     one-eq-fun1 {x} {y} (one-eq-fun2 ⋆)
   ==⟨ refl ⋆ ⟩
     ⋆
@@ -64,18 +69,34 @@ isSet-one {x} {y} p q =
 
 {- Coproduct of sets is a set (Exercise 3.2 in the HoTT book) -}
 
-+-elim₁ : {X Y : Set} {Z : X + Y -> Set₁} -> (xy : X + Y) -> ((x : X) -> Z (inl x)) -> ((y : Y) -> Z (inr y)) -> Z xy
++-elim₁ : {X Y : Set}
+          {Z : X + Y -> Set₁}
+       -> (xy : X + Y)
+       -> ((x : X) -> Z (inl x))
+       -> ((y : Y) -> Z (inr y))
+       -> Z xy
 +-elim₁ (inl x) f g = f x
 +-elim₁ (inr y) f g = g y
 
 codeX : {X Y : Set} -> X -> X + Y -> Set
 codeX x0 xy = +-elim₁ xy (λ x -> x0 == x) (λ _ -> Zero)
 
-encodeX : {X Y : Set} -> (x0 : X) -> (xy : X + Y) -> (p : inl x0 == xy) -> codeX x0 xy
+encodeX : {X Y : Set}
+       -> (x0 : X)
+       -> (xy : X + Y)
+       -> (p : inl x0 == xy)
+       -> codeX x0 xy
 encodeX x0 xy p = transport {Y = λ xy -> codeX x0 xy} p (refl x0)
 
-decodeX : {X Y : Set} -> (x0 : X) -> (xy : X + Y) -> (c : codeX x0 xy) -> inl x0 == xy
-decodeX x0 xy = +-elim {Z = λ xy -> codeX x0 xy -> inl x0 == xy} xy (λ x c -> app-cong {f = inl} c) (λ y c -> zero-elim c)
+decodeX : {X Y : Set}
+       -> (x0 : X)
+       -> (xy : X + Y)
+       -> (c : codeX x0 xy)
+       -> inl x0 == xy
+decodeX x0 xy = +-elim {Z = λ xy -> codeX x0 xy -> inl x0 == xy}
+                       xy
+                       (λ x c -> app-cong {f = inl} c)
+                       (λ y c -> zero-elim c)
 
 encodeX-iso1 : {X Y : Set}
             -> (x0 : X)
@@ -84,7 +105,9 @@ encodeX-iso1 : {X Y : Set}
             -> decodeX x0 xy (encodeX x0 xy p) == p
 encodeX-iso1 x0 xy p =
     decodeX x0 xy (encodeX x0 xy p)
-  ==⟨ based-eq-elim {Y = λ xy p -> decodeX x0 xy (encodeX x0 xy p) == p} p (refl (refl (inl x0))) ⟩
+  ==⟨ based-eq-elim {Y = λ xy p -> decodeX x0 xy (encodeX x0 xy p) == p}
+                    p
+                    (refl (refl (inl x0))) ⟩
     p
   ∎
 
@@ -95,7 +118,9 @@ encodeX-iso2-aux : {X Y : Set}
                 -> encodeX {X} {Y} x0 (inl x) (decodeX x0 (inl x) c) == c
 encodeX-iso2-aux x0 x c =
     encodeX x0 (inl x) (decodeX x0 (inl x) c)
-  ==⟨ based-eq-elim {Y = λ x c -> encodeX x0 (inl x) (decodeX x0 (inl x) c) == c} c (refl (refl x0)) ⟩
+  ==⟨ based-eq-elim {Y = λ x c -> encodeX x0 (inl x) (decodeX x0 (inl x) c) == c}
+                    c
+                    (refl (refl x0)) ⟩
     c
   ∎
 
@@ -109,7 +134,8 @@ encodeX-iso2 x0 xy c =
   ==⟨ (+-elim {Z = λ xy -> (c : codeX x0 xy) -> encodeX x0 xy (decodeX x0 xy c) == c}
               xy
               (λ x c -> encodeX-iso2-aux x0 x c)
-              (λ y c -> zero-elim {X = λ _ -> encodeX x0 (inr y) (decodeX x0 (inr y) c) == c} c))
+              (λ y c -> zero-elim {X = λ _ -> encodeX x0 (inr y) (decodeX x0 (inr y) c) == c}
+                                  c))
       c ⟩
     c
   ∎
@@ -117,11 +143,21 @@ encodeX-iso2 x0 xy c =
 codeY : {X Y : Set} -> Y -> X + Y -> Set
 codeY y0 xy = +-elim₁ xy (λ _ -> Zero) (λ y -> y0 == y)
 
-encodeY : {X Y : Set} -> (y0 : Y) -> (xy : X + Y) -> (p : inr y0 == xy) -> codeY y0 xy
+encodeY : {X Y : Set}
+       -> (y0 : Y)
+       -> (xy : X + Y)
+       -> (p : inr y0 == xy)
+       -> codeY y0 xy
 encodeY y0 xy p = transport {Y = λ xy -> codeY y0 xy} p (refl y0)
 
-decodeY : {X Y : Set} -> (y0 : Y) -> (xy : X + Y) -> (c : codeY y0 xy) -> inr y0 == xy
-decodeY y0 xy = +-elim {Z = λ xy -> codeY y0 xy -> inr y0 == xy} xy (λ _ c -> zero-elim c) (λ _ c -> app-cong {f = inr} c)
+decodeY : {X Y : Set}
+       -> (y0 : Y)
+       -> (xy : X + Y)
+       -> (c : codeY y0 xy) -> inr y0 == xy
+decodeY y0 xy = +-elim {Z = λ xy -> codeY y0 xy -> inr y0 == xy}
+                       xy
+                       (λ _ c -> zero-elim c)
+                       (λ _ c -> app-cong {f = inr} c)
 
 encodeY-iso1 : {X Y : Set}
             -> (y0 : Y)
@@ -130,7 +166,9 @@ encodeY-iso1 : {X Y : Set}
             -> decodeY y0 xy (encodeY y0 xy p) == p
 encodeY-iso1 y0 xy p =
     decodeY y0 xy (encodeY y0 xy p)
-  ==⟨ based-eq-elim {Y = λ xy p -> decodeY y0 xy (encodeY y0 xy p) == p} p (refl (refl (inr y0))) ⟩
+  ==⟨ based-eq-elim {Y = λ xy p -> decodeY y0 xy (encodeY y0 xy p) == p}
+                    p
+                    (refl (refl (inr y0))) ⟩
     p
   ∎
 
@@ -141,7 +179,9 @@ encodeY-iso2-aux : {X Y : Set}
                 -> encodeY {X} {Y} y0 (inr y) (decodeY y0 (inr y) c) == c
 encodeY-iso2-aux y0 y c =
     encodeY y0 (inr y) (decodeY y0 (inr y) c)
-  ==⟨ based-eq-elim {Y = λ y c -> encodeY y0 (inr y) (decodeY y0 (inr y) c) == c} c (refl (refl y0)) ⟩
+  ==⟨ based-eq-elim {Y = λ y c -> encodeY y0 (inr y) (decodeY y0 (inr y) c) == c}
+                    c
+                    (refl (refl y0)) ⟩
     c
   ∎
 
@@ -225,7 +265,9 @@ pair-eq {X} {Y} xy xy' p q =
     xy
   ==⟨ (×-elim {Z = λ xy -> fst xy == fst xy' -> snd xy == snd xy' -> xy == xy'}
               xy
-              (λ x y p q -> (×-elim {Z = λ xy' -> fst (x , y) == fst xy' -> snd (x , y) == snd xy' -> (x , y) == xy'}
+              (λ x y p q -> (×-elim {Z = λ xy' -> fst (x , y) == fst xy'
+                                               -> snd (x , y) == snd xy'
+                                               -> (x , y) == xy'}
                                     xy'
                                     (λ x' y' p q -> pair-eq-aux p q))
                              p q))
@@ -241,9 +283,13 @@ pair-eq-eta {X} {Y} xy xy' p =
     p
   ==⟨ eq-elim {Y = λ xy xy' p -> p == pair-eq xy xy' (app-cong p) (app-cong p)}
               p
-              (λ xy → ×-elim {Z = λ xy → refl xy == pair-eq xy xy (app-cong {f = fst} (refl xy)) (app-cong {f = snd} (refl xy))}
-                             xy
-                             (λ x y -> (refl (refl (x , y))))) ⟩
+              (λ xy -> ×-elim {Z = λ xy ->    refl xy
+                                           == pair-eq xy
+                                                      xy
+                                                      (app-cong {f = fst} (refl xy))
+                                                      (app-cong {f = snd} (refl xy))}
+                              xy
+                              (λ x y -> (refl (refl (x , y))))) ⟩
     pair-eq xy xy' (app-cong p) (app-cong p)
   ∎
 

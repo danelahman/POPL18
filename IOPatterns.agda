@@ -12,7 +12,7 @@ open import eMLTT
 
 module IOPatterns where
 
-{- A representation of the canonical elements of type UFA for the theory of input-output of bits -}
+{- Canonical elements of type UFA for the theory of input-output of bits -}
 
 data UF (X : Set) : Set where
   F-return : (x : X) -> UF X
@@ -33,9 +33,12 @@ data Protocol : Set where
 
 handled-with : {X : Set} -> UF X -> (X -> Protocol -> U) -> Protocol -> U
 handled-with (F-return x)  f p       = f x p
-handled-with (F-read c)    f (r p)   = pi-c (sum-c one-c one-c) (λ v -> handled-with (c v) f (p v))
-handled-with (F-write v c) f (w q p) = sig-c (q v) (λ w -> handled-with c f p)
-handled-with c f (or p0 p1)          = sum-c (handled-with c f p0) (handled-with c f p1)
+handled-with (F-read c)    f (r p)   = pi-c (sum-c one-c one-c)
+                                            (λ v -> handled-with (c v) f (p v))
+handled-with (F-write v c) f (w q p) = sig-c (q v)
+                                             (λ w -> handled-with c f p)
+handled-with c f (or p0 p1)          = sum-c (handled-with c f p0)
+                                             (handled-with c f p1)
 handled-with _             _ _       = zero-c
 
 
@@ -57,7 +60,8 @@ ex-c = F-write (inl ⋆) (F-read (λ v -> F-write v (F-return ⋆)))
 ex1-p : Protocol
 ex1-p = w (λ _ -> one-c) (r (λ v -> w (λ _ -> one-c) e))
 
-ex1 : El (follows-protocol ex-c ex1-p) ==₁ Sigma One (λ _ -> One + One -> Sigma One (λ _ -> One))
+ex1 :     El (follows-protocol ex-c ex1-p)
+      ==₁ Sigma One (λ _ -> One + One -> Sigma One (λ _ -> One))
 ex1 = refl _
 
 ex1-witness : Sigma One (λ _ -> One + One -> Sigma One (λ _ -> One))
@@ -66,5 +70,6 @@ ex1-witness = ⋆ , (λ _ -> ⋆ , ⋆)
 ex2-p : Protocol
 ex2-p = w (λ _ -> one-c) (w (λ _ -> one-c) e)
 
-ex2 : El (follows-protocol ex-c ex2-p) ==₁ Sigma One (λ _ -> Zero)
+ex2 :     El (follows-protocol ex-c ex2-p)
+      ==₁ Sigma One (λ _ -> Zero)
 ex2 = refl _
