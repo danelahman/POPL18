@@ -30,7 +30,7 @@ isCon : {l l' : Loc}
      -> (d : (l == l') + (l == l' -> Zero))
      -> (p q : l == l')
      -> con d p == con d q
-isCon d p q = +-elim {Z = λ d → con d p == con d q}
+isCon d p q = +-elim {Z = λ d -> con d p == con d q}
                      d
                      (λ r -> refl r)
                      (λ r -> zero-elim {X = λ _ -> con (inr r) p == con (inr r) q} (r q))
@@ -46,7 +46,7 @@ sym-cancel {X} {x} {x'} p =
     trans (sym p) p
   ==⟨ eq-elim {Y = λ x x' p -> trans (sym p) p == refl x'}
               p
-              (λ x → refl (refl x)) ⟩
+              (λ x -> refl (refl x)) ⟩
     refl x'
   ∎
 
@@ -67,7 +67,7 @@ isLinv : (f : {l l' : Loc} -> l == l' -> l == l')
       -> linv f (f p) == p
 isLinv f p =
     linv f (f p)
-  ==⟨ eq-elim {Y = λ l l' p → linv f (f p) == p} p (λ l → isLinv-aux f l) ⟩
+  ==⟨ eq-elim {Y = λ l l' p -> linv f (f p) == p} p (λ l -> isLinv-aux f l) ⟩
     p
   ∎
 
