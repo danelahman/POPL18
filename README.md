@@ -23,12 +23,12 @@ Section 7.1 (Lifting predicates from return values to IO-computations):
 Section 7.1 (Lifting predicates from return values to stateful computations):
 
 - `StatePassing.agda` - contains the shallow embedding of the types of locations and values stored at them; assumes that the
-propositional equality on locations is decidable; uses the [Hedberg's theorem](http://dblp.org/rec/journals/jfp/Hedberg98) to show that as the type of locations is decidable, it is also a
+propositional equality on locations is decidable; uses the [Hedberg's theorem](http://dblp.org/rec/journals/jfp/Hedberg98) to show that as the type of locations has decidable equality, it is also a
 set in the sense of Homotopy Type Theory (Def. 3.1.1 in the [Homotopy Type Theory book](https://homotopytypetheory.org/book/)); and defines the natural state-passing representation of stateful computations.
 
 - `StateEquations.agda` - contains witnesses for the propositional proof obligations corresponding to the five equations of the algebraic
-theory of global state given in Section 3.2 of the above-mentioned paper, highlighting that the definition of the witness for the second
-equation needs the type of locations to be decidable (and thus a set).
+theory of global state given in Section 3.2 of the above-mentioned paper, highlighting that the proof of the second
+equation needs the type of locations to be a set (which follows from it having a decidable equality using Hedberg's theorem, as shown in `StatePassing.agda`).
 
 - `StateLifting.agda` - contains the definition of the handling construct that handles stateful computations into their natural state-passing
 representation; defines Dijkstra's weakest precondition predicate transformer using this handling construct; and demonstrates that

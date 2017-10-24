@@ -12,7 +12,7 @@ open import eMLTT
 
 module StatePassing where
 
-{- Types of locations and store values, the former are a decidable set -}
+{- Types of locations and store values; the former is assumed to have decidable equality -}
 
 postulate
   Loc : Set
