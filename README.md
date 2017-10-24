@@ -23,7 +23,7 @@ Section 7.1 (Lifting predicates from return values to IO-computations):
 Section 7.1 (Lifting predicates from return values to stateful computations):
 
 - `StatePassing.agda` - contains the shallow embedding of the types of locations and values stored at them; assumes that the
-propositional equality on locations is decidable; uses the [Hedberg's theorem](http://dblp.org/rec/journals/jfp/Hedberg98) to show that as the type of locations has decidable equality, it is also a
+propositional equality on locations is decidable; uses [Hedberg's theorem](http://dblp.org/rec/journals/jfp/Hedberg98) to show that as the type of locations has decidable equality, it is also a
 set in the sense of Homotopy Type Theory (Def. 3.1.1 in the [Homotopy Type Theory book](https://homotopytypetheory.org/book/)); and defines the natural state-passing representation of stateful computations.
 
 - `StateEquations.agda` - contains witnesses for the propositional proof obligations corresponding to the five equations of the algebraic
