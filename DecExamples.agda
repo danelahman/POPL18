@@ -12,7 +12,7 @@ open import eMLTT
 
 module DecExamples where
 
-{- Definition of sets -}
+{- Definition of decidable propositional equality for a set X -}
 
 isDec : Set -> Set
 isDec X = (x x' : X) -> (x == x') + (x == x' -> Zero)
