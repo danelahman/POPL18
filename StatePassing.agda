@@ -20,8 +20,8 @@ postulate
   isDec : (l l' : Loc) -> (l == l') + (l == l' -> Zero)
 
 
-{- Hedberg's theorem for Loc, showing that being a set follows from decidable equality   -}
-{- See Section 3.2 of Michael Hedberg. A coherence theorem for Martin-Löf’s type theory. -}
+{- Hedberg's theorem for Loc, showing that being a set follows from decidable equality     -}
+{- See Section 3.2 of Michael Hedberg's "A coherence theorem for Martin-Löf’s type theory" -}
 
 con : {l l' : Loc} -> ((l == l') + (l == l' -> Zero)) -> l == l' -> l == l'
 con d p = +-elim d (λ q -> q) (λ _ -> p)
