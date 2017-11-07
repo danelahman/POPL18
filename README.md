@@ -1,6 +1,6 @@
 This repository contains the formalisation accompanying the examples given in Section 7 of the paper
 
- &nbsp;&nbsp;&nbsp;&nbsp; D. Ahman. Handling fibred algebraic effects. (Conditionally accepted to POPL 2018, link to appear here)
+ &nbsp;&nbsp;&nbsp;&nbsp; D. Ahman. **Handling fibred algebraic effects.** Proc. ACM Program. Lang., v. 2, issue POPL, article 7, 2018. ([pdf](https://danelahman.github.io/papers/popl18.pdf))
 
 In these examples, we show that effect handlers provide a useful mechanism for reasoning about effectful programs.
 This formalisation is based on an embedding of the relevant value fragment of the language we present in the
